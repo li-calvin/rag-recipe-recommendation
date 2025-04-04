@@ -127,15 +127,15 @@ def ingest_documents(collection, data_dir, embedding_model, chunk_size, overlap)
 if __name__ == "__main__":
     print("\n--- Ingestion ---")
     # 
-    while True:
-            embedding_model= input("Enter the embedding model to use for ingestion and querying (nomic/minilm/mpnet): ").strip().lower()
-            if embedding_model in ['nomic','minilm', 'mpnet']:
-                vector_dim = EMBEDDING_VECTOR_DIMS[embedding_model]
-                break  # Exit the loop when a valid model is entered
-            print("Invalid model. Please choose from: nomic, minilm, mpnet.")
+    # while True:
+    #         embedding_model= input("Enter the embedding model to use for ingestion and querying (nomic/minilm/mpnet): ").strip().lower()
+    #         if embedding_model in ['nomic','minilm', 'mpnet']:
+    #             vector_dim = EMBEDDING_VECTOR_DIMS[embedding_model]
+    #             break  # Exit the loop when a valid model is entered
+    #         print("Invalid model. Please choose from: nomic, minilm, mpnet.")
 
-    chunk_size = int(input("Enter chunk size (default: 500): ") or 500)
-    overlap = int(input("Enter overlap size (default: 50): ") or 50)
+    # chunk_size = int(input("Enter chunk size (default: 500): ") or 500)
+    # overlap = int(input("Enter overlap size (default: 50): ") or 50)
 
     # Delete the collection if it exists
     try:
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     # Ingest documents 
     file_path = "/Users/CalvinLii/Documents/mktg4604/rag-recipe-recommendation/Data"
     print("Ingesting PDFs")
-    ingest_time = ingest_documents(collection, file_path, embedding_model, chunk_size, overlap)
+    ingest_time = ingest_documents(collection, file_path, embedding_model='nomic', chunk_size=500, overlap=50)
     print("Document Ingestion Complete")
 
     print("\n--- Timing Data ---")

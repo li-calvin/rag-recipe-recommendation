@@ -123,7 +123,7 @@ def ingest_documents(collection, data_dir, embedding_model, chunk_size, overlap)
 
 
 
-def search_embeddings(collection, query, embedding_model="minilm", top_k=2):
+def search_embeddings(collection, query, embedding_model="minilm", top_k=5):
     """Retrieve top-k similar chunks using the selected embedding model."""
     query_embedding, elapsed_time = get_embedding(query, embedding_model)
 
@@ -179,17 +179,10 @@ def generate_rag_response(query, context_results, ollama_model="mistral"):
     Structure your response as follows:
     1. Dish that is recommended
     \n\n
-    2. Ingredients Owned: 
-    - ingredient 1 
-    - ingredient 2 
-    - etc.
+    2. Ingredients with measurements: 
     \n\n
-    3. Ingredient Missing: 
-    - ingredient 1 
-    - ingredient 2 
-    - etc. 
-    \n\n
-    4. Directions: 
+    3. Directions: 
+    4: Nutrition Facts: 
 
 
 Context:
@@ -211,13 +204,13 @@ Answer:"""
 if __name__ == "__main__":
     while True: 
         # Input for LLM Model 
-        embedding_model = 'minilm'
+        embedding_model = 'nomic'
 
         print(f"\n\n--- Chromadb Query using: {embedding_model} ---")
-        ollama_model_choice = input("Choose Ollama model to provide context to (mistral/llama3.2): ").strip().lower()
-        if ollama_model_choice not in ["mistral", "llama3.2"]:
-            print("Invalid Ollama model choice. Using 'mistral' by default.")
-            ollama_model_choice = "mistral"
+        # ollama_model_choice = input("Choose Ollama model to provide context to (mistral/llama3.2): ").strip().lower()
+        # if ollama_model_choice not in ["mistral", "llama3.2"]:
+        #     print("Invalid Ollama model choice. Using 'mistral' by default.")
+        ollama_model_choice = "llama3.2"
 
         query = input("\nEnter your search query: ")
         if query.lower() == "exit":
