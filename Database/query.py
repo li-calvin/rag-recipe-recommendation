@@ -123,7 +123,7 @@ def ingest_documents(collection, data_dir, embedding_model, chunk_size, overlap)
 
 
 
-def search_embeddings(collection, query, embedding_model="minilm", top_k=5):
+def search_embeddings(collection, query, embedding_model="minilm", top_k=2):
     """Retrieve top-k similar chunks using the selected embedding model."""
     query_embedding, elapsed_time = get_embedding(query, embedding_model)
 
@@ -172,7 +172,7 @@ def generate_rag_response(query, context_results, ollama_model="mistral"):
   
 
     prompt = f"""
-    You are a helpful AI assistant. 
+    You are a Dietician.
     Use the following context to answer the query as accurately as possible.  
     If the context is not relevant to the query, say 'I don't know'.
 
@@ -211,7 +211,7 @@ Answer:"""
 if __name__ == "__main__":
     while True: 
         # Input for LLM Model 
-        embedding_model = 'nomic'
+        embedding_model = 'minilm'
 
         print(f"\n\n--- Chromadb Query using: {embedding_model} ---")
         ollama_model_choice = input("Choose Ollama model to provide context to (mistral/llama3.2): ").strip().lower()

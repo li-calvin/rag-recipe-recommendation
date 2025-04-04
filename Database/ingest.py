@@ -148,7 +148,7 @@ if __name__ == "__main__":
     collection = chroma_client.create_collection(name="ds4300_notes")
 
     # Ingest documents 
-    file_path = "/Users/CalvinLii/Documents/mktg4604/rag-recipe-recommendation_copy/recipes_raw"
+    file_path = "/Users/CalvinLii/Documents/mktg4604/rag-recipe-recommendation/Data"
     print("Ingesting PDFs")
     ingest_time = ingest_documents(collection, file_path, embedding_model, chunk_size, overlap)
     print("Document Ingestion Complete")
