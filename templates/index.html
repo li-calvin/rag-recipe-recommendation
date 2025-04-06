@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Recommendation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            white-space: pre-line;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .section {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recipe Recommendation</h1>
+        <div class="input-group">
+            <input type="text" id="query" placeholder="Ask for a recipe (e.g., 'Give me a healthy dinner recipe')">
+            <button onclick="searchRecipe()">Search</button>
+        </div>
+        <div id="loading" class="loading">Loading...</div>
+        <div id="response" class="response"></div>
+    </div>
+
+    <script>
+        function searchRecipe() {
+            const query = document.getElementById('query').value;
+            const loading = document.getElementById('loading');
+            const response = document.getElementById('response');
+            
+            if (!query) {
+                alert('Please enter a question');
+                return;
+            }
+
+            loading.style.display = 'block';
+            response.innerHTML = '';
+
+            fetch('http://localhost:5001/api/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    embedding_model: 'nomic',
+                    top_k: 5,
+                    ollama_model: 'llama3.2'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+                if (data.error) {
+                    response.innerHTML = `Error: ${data.error}`;
+                    return;
+                }
+
+                // Parse the response and format it into sections
+                const sections = data.response.split('\n\n');
+                let formattedResponse = '';
+                
+                sections.forEach(section => {
+                    if (section.trim()) {
+                        const [title, ...content] = section.split('\n');
+                        formattedResponse += `
+                            <div class="section">
+                                <div class="section-title">${title}</div>
+                                <div>${content.join('<br>')}</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                response.innerHTML = formattedResponse;
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                response.innerHTML = `Error: ${error.message}`;
+            });
+        }
+
+        // Allow Enter key to trigger search
+        document.getElementById('query').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchRecipe();
+            }
+        });
+    </script>
+</body>
+</html> 

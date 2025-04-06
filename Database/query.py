@@ -116,7 +116,7 @@ def ingest_documents(collection, data_dir, embedding_model, chunk_size, overlap)
                 for chunk_index, chunk in enumerate(chunks):
                     store_embedding(collection, file_name, 0, chunk_index, chunk, embedding_model)
 
-            print(f"✅ Processed: {file_name}")   
+            print(f"Processed: {file_name}")   
     ingest_time = time.time() - start_time 
 
     return ingest_time
@@ -181,8 +181,9 @@ def generate_rag_response(query, context_results, ollama_model="mistral"):
     \n\n
     2. Ingredients with measurements: 
     \n\n
-    3. Directions: 
-    4: Nutrition Facts: 
+    3. Prep and Cook Time:
+    4. Direction: 
+    5: Nutrition Facts: 
 
 
 Context:
@@ -217,21 +218,21 @@ if __name__ == "__main__":
             break
         
         # Start the query processing timer
-        start_query_time = time.time()
+        # start_query_time = time.time()
         context_results, search_time, embedding_time = search_embeddings(collection, query, embedding_model)
 
         response, response_time = generate_rag_response(query, context_results, ollama_model_choice)
         
         # Calculate the total query processing time
-        total_query_time = time.time() - start_query_time
+        # total_query_time = time.time() - start_query_time
 
 
         print("\n--- Response ---")
         print(response)
 
         # Print the timings
-        print("\n--- Timing Data ---")
-        print(f"Query embedding time: {embedding_time:.4f} sec")
-        print(f"Search time: {search_time:.4f} sec")
-        print(f"Response generation time: {response_time:.4f} sec")
-        print(f"Total query time: {total_query_time:.4f} sec")
+        # print("\n--- Timing Data ---")
+        # print(f"Query embedding time: {embedding_time:.4f} sec")
+        # print(f"Search time: {search_time:.4f} sec")
+        # print(f"Response generation time: {response_time:.4f} sec")
+        # print(f"Total query time: {total_query_time:.4f} sec")
