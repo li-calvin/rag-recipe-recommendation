@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saved Recipes</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <script>
+    function unsaveRecipe(form) {
+      const index = form.dataset.index;
+      fetch('/unsave', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ index: parseInt(index) })
+      }).then(() => {
+        location.reload();
+      });
+      return false;
+    }
+
+    function filterRecipes() {
+      const query = document.getElementById('savedSearch').value.toLowerCase();
+      const cards = document.querySelectorAll('.saved-card');
+
+      cards.forEach(card => {
+        const title = card.querySelector('.saved-title')?.innerText.toLowerCase() || "";
+        const content = card.querySelector('.recipe-html')?.innerText.toLowerCase() || "";
+        const timestamp = card.querySelector('.saved-time')?.innerText.toLowerCase() || "";
+
+        const combined = title + " " + content + " " + timestamp;
+        const matches = combined.includes(query);
+
+        card.style.display = matches ? "block" : "none";
+      });
+    }
+    function toggleRename(button) {
+      const form = button.closest('.rename-form');
+      const input = form.querySelector('.rename-input');
+      const saveBtn = form.querySelector('.save-btn');
+
+      input.style.display = 'inline-block';
+      saveBtn.style.display = 'inline-block';
+      button.style.display = 'none';
+
+      input.focus();
+    }
+
+    function renameRecipe(form) {
+      const index = form.dataset.index;
+      const newTitle = form.newTitle.value.trim();
+
+      if (!newTitle) return false;
+
+      fetch('/rename', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ index: parseInt(index), new_title: newTitle })
+      }).then(() => {
+        document.getElementById(`title-${index}`).innerText = newTitle;
+        form.querySelector('.rename-input').style.display = 'none';
+        form.querySelector('.save-btn').style.display = 'none';
+        form.querySelector('.edit-btn').style.display = 'inline-block';
+      });
+
+      return false;
+    }
+  </script>
+</head>
+
+<body>
+  <div class="navbar">
+    <button onclick="window.location.href='/'">🍽️ Home</button>
+    <button onclick="window.location.reload()">💾 Saved</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="savedSearch" placeholder="🔍 Search your saved recipes..." oninput="filterRecipes()" />
+  </div>
+  <div class="container">
+    <div class="header">
+      <h1>Saved Recipes</h1>
+      <p>Here’s what you’ve saved so far</p>
+    </div>
+
+    {% if recipes %}
+    {% for recipe in recipes %}
+    <div class="card saved-card">
+      <div class="saved-meta">
+        <div class="saved-title" id="title-{{ loop.index0 }}">{{ recipe.title }}</div>
+
+        <form class="rename-form" onsubmit="return renameRecipe(this)" data-index="{{ loop.index0 }}">
+          <input type="text" name="newTitle" class="rename-input" placeholder="New title..." style="display:none;" />
+          <button type="button" class="edit-btn" onclick="toggleRename(this)">📝</button>
+          <button type="submit" class="save-btn" style="display:none;">✔️</button>
+        </form>
+
+        <div class="saved-time">{{ recipe.timestamp }}</div>
+      </div>
+
+      <div class="recipe-html">
+        {{ recipe.html | safe }}
+      </div>
+
+      <div class="unsave-wrapper">
+        <form onsubmit="return unsaveRecipe(this)" data-index="{{ loop.index0 }}">
+          <button type="submit" class="unsave-btn">🗑️ Unsave</button>
+        </form>
+      </div>
+      <br>
+      <br>
+      
+    </div>
+    {% endfor %}
+    {% else %}
+    <p style="text-align: center;">No recipes saved yet 🥲</p>
+    {% endif %}
+  </div>
+</body>
+
+</html>

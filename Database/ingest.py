@@ -116,9 +116,6 @@ def ingest_documents(collection, data_dir, embedding_model, chunk_size, overlap)
                     store_embedding(collection, file_name, recipe_id, recipe_count, recipe_details, embedding_model)
                     print(recipe_count)
 
-                
-
-
             print(f"✅ Processed: {file_name}")   
     ingest_time = time.time() - start_time 
 
@@ -148,7 +145,7 @@ if __name__ == "__main__":
     collection = chroma_client.create_collection(name="ds4300_notes")
 
     # Ingest documents 
-    file_path = "/Users/CalvinLii/Documents/mktg4604/rag-recipe-recommendation/Data"
+    file_path = "/Users/vivianli/Documents/mktg_ai/project/rag-recipe-recommendation/Data"
     print("Ingesting PDFs")
     ingest_time = ingest_documents(collection, file_path, embedding_model='nomic', chunk_size=500, overlap=50)
     print("Document Ingestion Complete")

@@ -178,12 +178,10 @@ def generate_rag_response(query, context_results, ollama_model="mistral"):
 
     Structure your response as follows:
     1. Dish that is recommended
-    \n\n
     2. Ingredients with measurements: 
-    \n\n
     3. Prep and Cook Time:
     4. Direction: 
-    5: Nutrition Facts: 
+    5. Nutrition Facts: 
 
 
 Context:
